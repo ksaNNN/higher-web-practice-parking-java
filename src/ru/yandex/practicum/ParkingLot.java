@@ -14,6 +14,12 @@ public class ParkingLot extends AbstractParkingLot {
     public ParkingLot(int totalSpots, int electricSpots, int premiumSpots) {
         super(totalSpots, electricSpots, premiumSpots);
 
+        if (electricSpots + premiumSpots > totalSpots) {
+            throw new IllegalArgumentException(
+                    "Сумма electricSpots и premiumSpots не может превышать totalSpots"
+            );
+        }
+
         this.spots = new char[totalSpots];
         this.parkedCars = new HashMap<>();
         this.normalSpots = totalSpots - electricSpots - premiumSpots;
@@ -120,8 +126,11 @@ public class ParkingLot extends AbstractParkingLot {
             // Электромобиль - только на электро место
             return findSpot('e');
         } else if (carType == 'P') {
-            // Премиум машина - только на премиум место
-            return findSpot('p');
+            int premiumSpot = findSpot('p');
+            if (premiumSpot != -1) {
+                return premiumSpot;
+            }
+            return findSpot('n');
         }
 
         return -1;
